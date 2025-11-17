@@ -26,3 +26,10 @@ body {
   align-items: center;
   justify-content: space-between;
 }
+
+.search input {
+  border: 0;
+  outline: 0;
+  color: #555;
+  background-color: #ebfffc;
+}
