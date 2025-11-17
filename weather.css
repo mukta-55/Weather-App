@@ -63,3 +63,8 @@ body {
   font-size: 80px;
   font-weight: 500;
 }
+
+.weather h2 {
+  font-size: 40px;
+  font-weight: 400;
+}
