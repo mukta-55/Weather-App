@@ -1,19 +1,3 @@
-/* Atmos — Interactive Weather App
-   Features:
-   - Search by city
-   - Quick selector of capitals (jump between countries)
-   - Geolocation
-   - Unit toggle (C/F)
-   - Animated backgrounds via CSS classes
-   - Loader & error handling
-   - Uses OpenWeather current weather by lat/lon endpoint as requested
-*/
-
-const API_KEY = "c0c77c983f0c6fcb7486e32fceab077b";
-const BASE =
-  "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API}";
-const ICON_URL = "https://openweathermap.org/img/wn/"; // + icon + @2x.png
-
 // Elements
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
@@ -41,14 +25,11 @@ const coordsEl = document.getElementById("coords");
 const openMap = document.getElementById("openMap");
 const forecastEl = document.getElementById("forecast");
 
-// app state
+// App state
 let useCelsius = true;
 let lastData = null;
 
-/* ----------------------------
-   Quick country/city list (capital cities + lat/lon)
-   You can expand this list as needed.
-   ----------------------------*/
+// Quick city list
 const QUICK = [
   { label: "Nairobi, Kenya 🇰🇪", lat: -1.286389, lon: 36.817223 },
   { label: "London, UK 🇬🇧", lat: 51.5074, lon: -0.1278 },
@@ -62,47 +43,46 @@ const QUICK = [
   { label: "Rio de Janeiro, Brazil 🇧🇷", lat: -22.9068, lon: -43.1729 },
 ];
 
-// populate selector
-function populateQuick() {
-  QUICK.forEach((c, idx) => {
-    const opt = document.createElement("option");
-    opt.value = idx;
-    opt.textContent = c.label;
-    countrySelect.appendChild(opt);
-  });
-}
-populateQuick();
+// Populate selector
+QUICK.forEach((c, idx) => {
+  const opt = document.createElement("option");
+  opt.value = idx;
+  opt.textContent = c.label;
+  countrySelect.appendChild(opt);
+});
 
-/* ----------------------------
-   Helpers
-   ----------------------------*/
+// -------------------------
+// Helpers
+// -------------------------
 function showLoader(show = true) {
   loader.classList.toggle("hidden", !show);
   if (show) errorMsg.classList.add("hidden");
 }
+
 function showError(msg) {
   errorMsg.textContent = msg;
   errorMsg.classList.remove("hidden");
   showLoader(false);
 }
-function kelvinToC(k) {
-  return k - 273.15;
+
+function formatTempC(temp) {
+  return `${Math.round(temp)}°C`;
 }
-function kelvinToF(k) {
-  return ((k - 273.15) * 9) / 5 + 32;
+
+function formatTempF(temp) {
+  return `${Math.round((temp * 9) / 5 + 32)}°F`;
 }
-function formatTemp(k) {
-  return useCelsius
-    ? `${Math.round(kelvinToC(k))}°C`
-    : `${Math.round(kelvinToF(k))}°F`;
+
+function formatTemp(temp) {
+  return useCelsius ? formatTempC(temp) : formatTempF(temp);
 }
+
 function fmtTime(unixSec, tzOffset = 0) {
-  // tzOffset in seconds (from API)
   const d = new Date((unixSec + tzOffset) * 1000);
   return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
+
 function setBGForWeather(main) {
-  // Add small class changes to body/card to hint weather
   const el = document.body;
   el.classList.remove(
     "bg-clear",
@@ -135,8 +115,7 @@ function setBGForWeather(main) {
   }
 }
 
-/* tiny animated icon mapping using emoji fallback + openweather icon */
-function weatherEmoji(main, id) {
+function weatherEmoji(main) {
   if (main === "Clear") return "☀️";
   if (main === "Clouds") return "☁️";
   if (main === "Rain" || main === "Drizzle") return "🌧️";
@@ -145,19 +124,13 @@ function weatherEmoji(main, id) {
   return "🌫️";
 }
 
-/* ----------------------------
-   Core: fetch weather by lat/lon
-   Uses the user's endpoint pattern provided in prompt.
-   ----------------------------*/
-async function fetchWeatherByCoords(lat, lon) {
+// -------------------------
+// Fetch weather via serverless function
+// -------------------------
+async function fetchWeather(city) {
   showLoader(true);
-  errorMsg.classList.add("hidden");
-
-  const url = BASE.replace("{lat}", encodeURIComponent(lat))
-    .replace("{lon}", encodeURIComponent(lon))
-    .replace("{API}", encodeURIComponent(API_KEY));
   try {
-    const res = await fetch(url);
+    const res = await fetch(`/api/weather?city=${encodeURIComponent(city)}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     lastData = data;
@@ -166,30 +139,32 @@ async function fetchWeatherByCoords(lat, lon) {
     lastFetched.textContent = `Last fetched: ${new Date().toLocaleString()}`;
   } catch (err) {
     console.error(err);
-    showError("Failed to fetch weather. Check your network or API key.");
+    showError("Failed to fetch weather. Check network or city name.");
   }
 }
 
-/* render main weather card */
+// -------------------------
+// Render functions
+// -------------------------
 function renderWeather(data) {
   if (!data) return;
   const { weather, main, wind, sys, coord, timezone, name } = data;
   const mainW = weather[0].main;
   const desc = weather[0].description;
-  const icon = weather[0].icon; // e.g. 01d
 
-  // icon (use img + emoji fallback)
-  iconEl.innerHTML = `<img src="${ICON_URL}${icon}@2x.png" alt="${desc}" width="72" height="72" onerror="this.style.display='none'">${weatherEmoji(
-    mainW,
-    icon
+  // Icon
+  iconEl.innerHTML = `<img src="https://openweathermap.org/img/wn/${
+    weather[0].icon
+  }@2x.png" alt="${desc}" width="72" height="72" onerror="this.style.display='none'">${weatherEmoji(
+    mainW
   )}`;
 
   tempEl.textContent = formatTemp(main.temp);
   descEl.textContent = desc;
-  cityEl.textContent = `${name}, ${sys && sys.country ? sys.country : ""}`;
+  cityEl.textContent = `${name}, ${sys?.country || ""}`;
   timeEl.textContent = `Local time: ${new Date(
-    Date.now() + timezone * 1000 - new Date().getTimezoneOffset() * 60000
-  ).toLocaleString()}`; // rough local time
+    Date.now() + (timezone || 0) * 1000 - new Date().getTimezoneOffset() * 60000
+  ).toLocaleString()}`;
   humidityEl.textContent = `${main.humidity}%`;
   windEl.textContent = `${wind.speed} m/s`;
   pressureEl.textContent = `${main.pressure} hPa`;
@@ -198,120 +173,66 @@ function renderWeather(data) {
   coordsEl.textContent = `${coord.lat.toFixed(3)}, ${coord.lon.toFixed(3)}`;
   openMap.href = `https://www.openstreetmap.org/?mlat=${coord.lat}&mlon=${coord.lon}#map=10/${coord.lat}/${coord.lon}`;
 
-  // forecast placeholder: replicate some hourly info using current + simple derived hours
   renderForecast(data);
-
   setBGForWeather(mainW);
 }
 
-/* simple forecast: make 5 'hours' using current temp +/- */
 function renderForecast(data) {
   forecastEl.innerHTML = "";
   const now = Date.now();
-  const baseTempk = data.main.temp;
+  const baseTemp = data.main.temp;
   for (let i = 0; i < 5; i++) {
     const hour = new Date(now + i * 3600 * 1000);
-    const tK = baseTempk + Math.sin(i) * 2; // synthetic
+    const temp = baseTemp + Math.sin(i) * 2;
     const item = document.createElement("div");
     item.className = "hour";
-    item.innerHTML = `<div class="time">${hour
-      .getHours()
-      .toString()
-      .padStart(2, "0")}:00</div>
-                      <div class="icon">${weatherEmoji(
-                        data.weather[0].main
-                      )}</div>
-                      <div class="temp">${
-                        useCelsius
-                          ? Math.round(kelvinToC(tK)) + "°C"
-                          : Math.round(kelvinToF(tK)) + "°F"
-                      }</div>
-                      <small>${data.weather[0].description}</small>`;
+    item.innerHTML = `
+      <div class="time">${hour.getHours().toString().padStart(2, "0")}:00</div>
+      <div class="icon">${weatherEmoji(data.weather[0].main)}</div>
+      <div class="temp">${formatTemp(temp)}</div>
+      <small>${data.weather[0].description}</small>
+    `;
     forecastEl.appendChild(item);
   }
 }
 
-/* ----------------------------
-   Search by city name - uses geocoding (openweathermap has geocoding but to keep to the prompt we will use direct fetch to find lat/lon via "weather?q=" then call lat/lon endpoint to match the requested pattern)
-   ----------------------------*/
-async function searchByCityName(city) {
-  if (!city || city.trim().length === 0) return;
-  showLoader(true);
-  try {
-    // use the convenient weather?q= endpoint to get coords
-    const qUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-      city
-    )}&appid=${API_KEY}`;
-    const r = await fetch(qUrl);
-    if (!r.ok) throw new Error("City not found");
-    const json = await r.json();
-    // now call fetchWeatherByCoords using lat/lon to follow the specified pattern
-    const { coord } = json;
-    if (coord && coord.lat != null && coord.lon != null) {
-      await fetchWeatherByCoords(coord.lat, coord.lon);
-    } else {
-      throw new Error("No coordinates returned");
-    }
-  } catch (err) {
-    console.error(err);
-    showError("City not found. Try another name or use the picker.");
-  }
-}
-
-/* ----------------------------
-   UI wiring
-   ----------------------------*/
+// -------------------------
+// Event listeners
+// -------------------------
 searchBtn.addEventListener("click", () => {
-  const q = searchInput.value;
-  searchByCityName(q);
+  const city = searchInput.value.trim();
+  if (city) fetchWeather(city);
 });
 
 searchInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") searchByCityName(searchInput.value);
+  if (e.key === "Enter") searchBtn.click();
 });
 
-// country quick select
+// Quick city select
 countrySelect.addEventListener("change", (e) => {
   const idx = Number(e.target.value);
-  if (Number.isFinite(idx) && QUICK[idx]) {
-    const { lat, lon } = QUICK[idx];
-    fetchWeatherByCoords(lat, lon);
-  }
+  if (Number.isFinite(idx) && QUICK[idx])
+    fetchWeather(QUICK[idx].label.split(",")[0]);
 });
 
-// unit toggle
+// Unit toggle
 unitToggle.addEventListener("click", () => {
   useCelsius = !useCelsius;
   unitToggle.textContent = useCelsius ? "°C" : "°F";
-  unitToggle.setAttribute("aria-pressed", (!useCelsius).toString());
   if (lastData) renderWeather(lastData);
 });
 
-// geolocation
+// Geolocation
 geoBtn.addEventListener("click", () => {
-  if (!navigator.geolocation) {
-    showError("Geolocation not supported by your browser.");
-    return;
-  }
+  if (!navigator.geolocation) return showError("Geolocation not supported.");
   showLoader(true);
   navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
-    },
-    (err) => {
-      console.error(err);
-      showError(
-        "Unable to get your location. Allow location access or use search."
-      );
-    },
-    { timeout: 10000 }
+    (pos) => fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude),
+    () => showError("Unable to get your location.")
   );
 });
 
-/* initial default */
-fetchWeatherByCoords(-1.286389, 36.817223); // Nairobi default
-
-/* Extra: small keyboard hint: ArrowUp selects next quick city */
+// Keyboard quick nav
 document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowUp") {
     countrySelect.selectedIndex = Math.min(
@@ -319,11 +240,12 @@ document.addEventListener("keydown", (e) => {
       countrySelect.selectedIndex + 1
     );
     countrySelect.dispatchEvent(new Event("change"));
-  } else if (e.key === "ArrowDown") {
+  }
+  if (e.key === "ArrowDown") {
     countrySelect.selectedIndex = Math.max(0, countrySelect.selectedIndex - 1);
     countrySelect.dispatchEvent(new Event("change"));
   }
 });
 
-/* small polish: hide loader on network idle after 10s */
-setTimeout(() => showLoader(false), 10000);
+// Initial load: default Nairobi
+fetchWeather("Nairobi");
