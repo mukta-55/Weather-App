@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Atmos — Interactive Weather App</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main class="app">
+      <header class="app-header">
+        <div class="brand">
+          <h1>Atmos</h1>
+          <span class="tag">live weather • interactive • deploy-ready</span>
+        </div>
+
+        <div class="controls">
+          <div class="search">
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="Search city (e.g. Nairobi, Tokyo)..."
+              aria-label="Search city"
+            />
+            <button id="searchBtn" title="Search">🔎</button>
+          </div>
+
+          <div class="quick">
+            <select id="countrySelect" aria-label="Quick select country/city">
+              <!-- populated by JS -->
+            </select>
+          </div>
+
+          <div class="units">
+            <button id="unitToggle" aria-pressed="false" title="Toggle °C / °F">
+              °C
+            </button>
+          </div>
+
+          <div class="geo">
+            <button id="geoBtn" title="Use my location">📍</button>
+          </div>
+        </div>
+      </header>
+
+      <section id="card" class="weather-card">
+        <div class="weather-left">
+          <div class="weather-main">
+            <div id="icon" class="icon">☀️</div>
+            <div class="temp-group">
+              <div id="temp" class="temp">—°</div>
+              <div id="desc" class="desc">—</div>
+            </div>
+          </div>
+
+          <div class="meta">
+            <div class="city" id="city">—</div>
+            <div class="time" id="time">—</div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="label">Humidity</div>
+              <div id="humidity" class="value">—%</div>
+            </div>
+            <div class="stat">
+              <div class="label">Wind</div>
+              <div id="wind" class="value">— m/s</div>
+            </div>
+            <div class="stat">
+              <div class="label">Pressure</div>
+              <div id="pressure" class="value">— hPa</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="weather-right">
+          <div class="extras">
+            <div class="sun">
+              <div class="sunrise">
+                <small>Sunrise</small>
+                <div id="sunrise">—</div>
+              </div>
+              <div class="sunset">
+                <small>Sunset</small>
+                <div id="sunset">—</div>
+              </div>
+            </div>
+
+            <div class="map-preview">
+              <small>Coords</small>
+              <div id="coords">—</div>
+              <a id="openMap" target="_blank" rel="noopener" class="map-link"
+                >Open in map</a
+              >
+            </div>
+          </div>
+
+          <div class="forecast" id="forecast">
+            <!-- short 5-hour forecast by JS (uses current + next few hours when available) -->
+          </div>
+        </div>
+
+        <div id="loader" class="loader hidden" aria-hidden="true">Loading…</div>
+        <div id="errorMsg" class="error hidden"></div>
+      </section>
+
+      <footer class="app-footer">
+        <small
+          >Built by Norlan’s project • Data: OpenWeather •
+          <span id="lastFetched">—</span></small
+        >
+      </footer>
+
+      <!-- Animated background shapes -->
+      <div id="bg" class="background"></div>
+    </main>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
