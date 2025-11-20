@@ -13,7 +13,7 @@ async function fetchWeather(city) {
   weatherDisplay.innerHTML = "<p>Loading...</p>";
   try {
     const res = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${Nairobi}&units=metric&appid=${a855fdf3492437631d353952b05d3212}`
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
     );
     const data = await res.json();
 
