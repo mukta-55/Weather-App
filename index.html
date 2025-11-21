@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Climify App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <header class="header">
+        <h1>Climify App</h1>
+        <p>
+          Interactive Weather App with live data, forecasts, and favourites.
+        </p>
+      </header>
+
+      <section class="controls">
+        <input
+          type="text"
+          id="cityInput"
+          placeholder="Enter city name"
+          aria-label="City input"
+        />
+        <button id="searchBtn">Search</button>
+        <button id="geoBtn">Locate Me</button>
+        <button id="unitToggle">°C</button>
+      </section>
+
+      <section id="loader" class="loader">Loading...</section>
+
+      <section id="weatherCard" class="weather-card">
+        <div id="errorBox" class="error"></div>
+        <img id="weatherIcon" src="" alt="Weather Icon" />
+        <div class="weather-info">
+          <div id="temperature" class="temperature">--°</div>
+          <div id="description" class="description">No Data</div>
+          <div class="meta">
+            <span id="humidity">Humidity: --%</span>
+            <span id="wind">Wind: -- m/s</span>
+            <span id="localTime">--:--</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="hourlyForecast" class="hourly-forecast"></section>
+
+      <section id="favourites" class="favourites">
+        <h3>Favourites</h3>
+        <div id="favouritesList"></div>
+      </section>
+    </div>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
