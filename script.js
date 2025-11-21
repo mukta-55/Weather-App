@@ -1,6 +1,6 @@
 /* Atmos Weather App — Fully Functional JS */
 
-const OPENWEATHER_API_KEY = "YOUR_KEY_HERE"; // <-- replace with your API key
+const OPENWEATHER_API_KEY = "a855fdf3492437631d353952b05d3212"; // <-- replace with your API key
 
 const cityInput = document.getElementById("cityInput");
 const searchBtn = document.getElementById("searchBtn");
