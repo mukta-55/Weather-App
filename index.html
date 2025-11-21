@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Atmos — Interactive Weather (index.html)</title>
+    <meta
+      name="description"
+      content="Atmos — Interactive Weather App. Requires style.css and script.js. Uses OpenWeather (API key required)."
+    />
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <header class="app-header">
+        <div class="brand">
+          <div class="logo">At</div>
+          <div>
+            <h1>Atmos — Interactive Weather</h1>
+            <p class="lead">
+              HTML • CSS • JS — OpenWeather (API key required). Separate files:
+              index.html, style.css, script.js
+            </p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="search">
+            <input
+              id="query"
+              type="text"
+              placeholder="Search city or ZIP..."
+              aria-label="City search"
+              autocomplete="off"
+            />
+            <button id="searchBtn" class="btn">Search</button>
+            <button id="geoBtn" class="btn alt">Locate</button>
+          </div>
+          <button id="unitToggle" class="btn">°C</button>
+        </div>
+      </header>
+
+      <main class="app-main">
+        <section id="weatherCard" class="card" aria-live="polite">
+          <div
+            id="error"
+            class="error"
+            role="alert"
+            style="display: none"
+          ></div>
+          <div class="weather-top">
+            <div id="iconWrap" class="weather-icon" aria-hidden="true">
+              &nbsp;
+            </div>
+            <div class="weather-summary">
+              <div id="temperature" class="temperature">--°</div>
+              <div id="description" class="description">No data</div>
+              <div id="place" class="place">—</div>
+              <div class="meta">
+                <span id="wind">—</span>
+                <span id="humidity">—</span>
+                <span id="time">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hourly-chart">
+            <canvas
+              id="hourChart"
+              width="600"
+              height="140"
+              aria-hidden="true"
+            ></canvas>
+          </div>
+
+          <div class="actions">
+            <button id="saveFav" class="btn primary">★ Save favourite</button>
+            <div class="note">
+              Favourites & history saved locally in browser storage.
+            </div>
+          </div>
+        </section>
+
+        <aside class="sidebar">
+          <div class="card">
+            <h3>Search suggestions</h3>
+            <div id="suggestions" class="list small-note">
+              Type a city and press Enter or click Search.
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Favourites</h3>
+            <div id="favs" class="list"></div>
+          </div>
+
+          <div class="card">
+            <h3>History</h3>
+            <div id="history" class="list"></div>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="app-footer">
+        <div>
+          Built with ♥ — OpenWeather. Add your key in
+          <code>script.js</code> (const OPENWEATHER_API_KEY = 'YOUR_KEY')
+        </div>
+        <div class="small-note">
+          Tip: use Locate to quickly load local weather.
+        </div>
+      </footer>
+    </div>
+
+    <!-- Main script -->
+    <script src="script.js" defer></script>
+  </body>
+</html>
