@@ -1,5 +1,3 @@
-/* Atmos Pro Weather App — Full-feature JS */
-
 const OPENWEATHER_API_KEY = "ec0c11b54d7261e647e08d9ccf5b427a";
 
 // Element references
