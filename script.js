@@ -114,6 +114,8 @@ function updateUI(data) {
     currentUnit === "metric" ? "m/s" : "mph"
   }`;
 
+  let use24Hour = true; // true = 24-hour format, false = 12-hour format
+
   // Local time
   const timezoneOffset = data.timezone; // in seconds
   const localDate = new Date(
@@ -121,9 +123,11 @@ function updateUI(data) {
       timezoneOffset * 1000 -
       new Date().getTimezoneOffset() * 60000
   );
+
   localTime.textContent = localDate.toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
+    hour12: !use24Hour, // use24Hour controls the format
   });
 
   // Dynamic background
