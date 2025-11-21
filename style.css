@@ -1,151 +1,115 @@
-/* Aurora Weather App – Minimal, Clean, Impressive */
-
-/* ---------- RESET ---------- */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
+/* Atmos Weather App — Clean, Modern, Responsive */
 
 body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
   background: linear-gradient(135deg, #141e30, #243b55);
-  min-height: 100vh;
+  color: #fff;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  min-height: 100vh;
   padding: 20px;
-  color: #fff;
 }
 
-/* ---------- CONTAINER ---------- */
 .app-container {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  padding: 25px;
+  border-radius: 20px;
   width: 100%;
-  max-width: 420px;
-  border-radius: 24px;
-  padding: 28px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-  transition: 0.3s ease;
+  max-width: 400px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 
-.app-container:hover {
-  transform: translateY(-4px);
-}
-
-/* ---------- SEARCH BAR ---------- */
-.search-box {
-  display: flex;
-  gap: 10px;
+.header {
+  text-align: center;
   margin-bottom: 20px;
 }
 
-.search-box input {
+.header h1 {
+  font-size: 28px;
+  margin-bottom: 5px;
+}
+
+.header p {
+  font-size: 14px;
+  color: #cce0ff;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.controls input {
   flex: 1;
-  padding: 12px 15px;
-  border-radius: 12px;
+  padding: 10px;
+  border-radius: 10px;
   border: none;
   outline: none;
-  font-size: 15px;
-  background: rgba(255, 255, 255, 0.15);
+  font-size: 14px;
+  background: rgba(255,255,255,0.15);
   color: #fff;
 }
 
-.search-box input::placeholder {
-  color: #ddd;
-}
-
-.search-box button {
-  padding: 12px 18px;
+.controls button {
+  padding: 10px 15px;
+  border-radius: 10px;
   border: none;
-  border-radius: 12px;
   cursor: pointer;
-  font-size: 15px;
   background: #00c6ff;
   color: #fff;
+  font-size: 14px;
   transition: 0.3s;
 }
 
-.search-box button:hover {
+.controls button:hover {
   background: #0099cc;
 }
 
-/* ---------- WEATHER CARD ---------- */
 .weather-card {
   text-align: center;
-  margin-top: 15px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: 0.4s ease;
-}
-
-.weather-card.show {
-  opacity: 1;
-  transform: translateY(0);
+  padding: 20px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
 .weather-card img {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
   margin-bottom: 10px;
 }
 
-.temperature {
-  font-size: 52px;
+.weather-info .temperature {
+  font-size: 48px;
   font-weight: 600;
+  margin-bottom: 5px;
 }
 
-.description {
-  font-size: 18px;
-  margin-top: -6px;
-  color: #dce3ff;
+.weather-info .description {
+  font-size: 16px;
+  margin-bottom: 10px;
+  text-transform: capitalize;
 }
 
-/* ---------- DETAILS ROW ---------- */
-.details {
+.weather-info .meta {
   display: flex;
-  justify-content: space-between;
-  margin-top: 25px;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  border-radius: 16px;
-}
-
-.detail-box {
-  text-align: center;
-}
-
-.detail-box span {
-  display: block;
+  justify-content: space-around;
   font-size: 14px;
-  opacity: 0.8;
+  color: #cce0ff;
 }
 
-.detail-box h3 {
-  font-size: 20px;
-  margin-top: 5px;
-}
-
-/* ---------- ERROR MESSAGE ---------- */
 .error {
-  margin-top: 15px;
-  text-align: center;
   background: rgba(255, 80, 80, 0.2);
-  padding: 12px;
-  border-radius: 12px;
+  color: #ff8080;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
   display: none;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
