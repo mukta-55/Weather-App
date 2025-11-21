@@ -1,9 +1,4 @@
-// -------------------- Climify: Serverless-Ready JS --------------------
-let currentUnit = "metric"; // default Celsius
-let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
-let use24Hour = true; // 24-hour format
-let currentTimezoneOffset = 0; // seconds
-let clockInterval;
+const OPENWEATHER_API_KEY = "1e6678bec1ebb5d5314f8541443264ce";
 
 // Element references
 const cityInput = document.getElementById("cityInput");
@@ -23,7 +18,15 @@ const localTime = document.getElementById("localTime");
 const hourlyForecast = document.getElementById("hourlyForecast");
 const favouritesList = document.getElementById("favouritesList");
 
-// -------------------- Time Utils --------------------
+let currentUnit = "metric"; // default Celsius
+let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
+let use24Hour = true; // 24-hour format global toggle
+
+// ----------------- Live Clock -----------------
+let currentTimezoneOffset = 0; // seconds
+let clockInterval;
+
+// ----------------- Time Utils -----------------
 function formatCityTime(timezoneOffsetSec) {
   const nowUTC = Date.now() + new Date().getTimezoneOffset() * 60000;
   const cityTime = new Date(nowUTC + timezoneOffsetSec * 1000);
@@ -45,9 +48,10 @@ function toggleTimeFormat() {
   use24Hour = !use24Hour;
   const city = cityInput.value.trim();
   if (city) fetchWeather(city); // refresh time format
+  return use24Hour;
 }
 
-// -------------------- Event Listeners --------------------
+// ----------------- Event Listeners -----------------
 searchBtn.addEventListener("click", () => {
   const city = cityInput.value.trim();
   if (city) fetchWeather(city);
@@ -84,14 +88,13 @@ favouritesList.addEventListener("click", (e) => {
   }
 });
 
-// -------------------- Fetch Functions (Serverless) --------------------
+// ----------------- API Fetch Functions -----------------
 async function fetchWeather(city) {
   loader.style.display = "block";
   errorBox.style.display = "none";
-
-  const url = `/api/weather?city=${encodeURIComponent(
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
     city
-  )}&unit=${currentUnit}`;
+  )}&units=${currentUnit}&appid=${OPENWEATHER_API_KEY}`;
 
   try {
     const response = await fetch(url);
@@ -109,8 +112,7 @@ async function fetchWeather(city) {
 async function fetchWeatherByCoords(lat, lon) {
   loader.style.display = "block";
   errorBox.style.display = "none";
-
-  const url = `/api/weather?lat=${lat}&lon=${lon}&unit=${currentUnit}`;
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=${currentUnit}&appid=${OPENWEATHER_API_KEY}`;
 
   try {
     const response = await fetch(url);
@@ -125,9 +127,9 @@ async function fetchWeatherByCoords(lat, lon) {
   }
 }
 
-// -------------------- UI Update --------------------
+// ----------------- UI Update -----------------
 function updateUI(data) {
-  // Icon & description
+  // Icon and description
   const iconCode = data.weather[0].icon;
   weatherIcon.src = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
   weatherIcon.alt = data.weather[0].description;
@@ -150,7 +152,7 @@ function updateUI(data) {
   if (clockInterval) clearInterval(clockInterval);
   clockInterval = setInterval(() => {
     localTime.textContent = formatCityTime(currentTimezoneOffset);
-  }, 60000);
+  }, 60000); // every 1 min
 
   // Dynamic background
   setDynamicBackground(iconCode);
@@ -165,7 +167,7 @@ function updateUI(data) {
   }
 }
 
-// -------------------- Helpers --------------------
+// ----------------- Helpers -----------------
 function setDynamicBackground(iconCode) {
   if (iconCode.includes("d")) {
     document.body.style.background =
@@ -201,5 +203,5 @@ function renderFavourites() {
   });
 }
 
-// Initial render
+// Initial favourites render
 renderFavourites();
