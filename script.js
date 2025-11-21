@@ -1,6 +1,6 @@
 /* Aurora Weather App – Clean, Stable, Interactive */
 
-const apiKey = "YOUR_OPENWEATHER_API_KEY"; // <-- replace this
+const apiKey = "a855fdf3492437631d353952b05d3212"; // <-- replace this
 
 const input = document.getElementById("cityInput");
 const searchBtn = document.getElementById("searchBtn");
